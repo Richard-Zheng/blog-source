@@ -5,39 +5,36 @@ on: [workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Deploy blog to Github
     steps:
     - name: Checkout
       uses: actions/checkout@v1
+
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2-beta
       with:
-        submodules: true # Checkout private submodules(themes or something else).
-    - name: Install pandoc
+        node-version: '12'
+
+    - name: Install pandoc (Latex support)
       run: |
-        wget https://github.com/jgm/pandoc/releases/download/2.13/pandoc-2.13-1-amd64.deb
-        sudo dpkg -i pandoc*.deb
-    
-    # Caching dependencies to speed up workflows. (GitHub will remove any cache entries that have not been accessed in over 7 days.)
-    - name: Cache node modules
-      uses: actions/cache@v1
-      id: cache
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - name: Install Dependencies
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: npm ci
-    
-    # Deploy hexo blog website.
-    - name: Deploy
-      id: deploy
-      uses: sma11black/hexo-action@v1.0.3
-      with:
-        deploy_key: ${{ secrets.DEPLOY_KEY }}
-        user_name: Richard-Zheng
-        user_email: yuqiu36@live.com
-    # Use the output from the `deploy` step(use for test action)
-    - name: Get the output
+        wget -O pandoc.deb https://github.com/jgm/pandoc/releases/download/2.11.1/pandoc-2.11.1-1-amd64.deb
+        sudo dpkg -i pandoc.deb
+    - name: Set git environment
+      env: 
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        USERNAME: Richard-Zheng
+        EMAIL: yuqiu36@live.com
       run: |
-        echo "${{ steps.deploy.outputs.notify }}"
+        mkdir -p ~/.ssh/
+        echo "$DEPLOY_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+        git config --global user.name "$USERNAME"
+        git config --global user.email "$EMAIL"
+    - name: Setup Hexo environment
+      run: |
+        npm install -g hexo-cli
+        npm install
+    - name: Deploy Hexo
+      run: |
+        hexo g
+        hexo d
