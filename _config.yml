@@ -103,5 +103,5 @@ theme: next
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  repository: https://github.com/Richard-Zheng/richard-zheng.github.io
+  repository: git@github.com:Richard-Zheng/richard-zheng.github.io.git
   branch: master
