@@ -1,6 +1,6 @@
 name: Deploy blog to Github
 
-on: [push]
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -12,7 +12,9 @@ jobs:
       with:
         submodules: true # Checkout private submodules(themes or something else).
     - name: Install pandoc
-      run: sudo apt-get install pandoc
+      run:
+        - wget https://github.com/jgm/pandoc/releases/download/2.13/pandoc-2.13-1-amd64.deb
+        - sudo dpkg -i pandoc*.deb
     
     # Caching dependencies to speed up workflows. (GitHub will remove any cache entries that have not been accessed in over 7 days.)
     - name: Cache node modules
