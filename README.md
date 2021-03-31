@@ -1,9 +1,8 @@
-## Dependencies
-- MathJax
+# Setup
 
-    install pandoc first(`brew install pandoc`)
-
-    `npm un hexo-renderer-marked`
-    
-    `npm i hexo-renderer-pandoc`
+1. Install [Node.js](http://nodejs.org/), [Git](https://git-scm.com/) and [pandoc](https://pandoc.org/installing.html)
+2. Install Hexo `npm install -g hexo-cli`
+3. Clone this repository
+4. Install dependencies `npm install`
+5. Start server `hexo clean && hexo s `
 
