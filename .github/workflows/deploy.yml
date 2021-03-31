@@ -8,34 +8,26 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
-
     - name: Setup Node.js environment
       uses: actions/setup-node@v2-beta
       with:
         node-version: '12'
-
     - name: Install pandoc (Latex support)
       run: |
         wget -O pandoc.deb https://github.com/jgm/pandoc/releases/download/2.13/pandoc-2.13-1-amd64.deb
         sudo dpkg -i pandoc.deb
-    - name: Set git environment
-      env: 
-        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-        USERNAME: Richard-Zheng
-        EMAIL: yuqiu36@live.com
-      run: |
-        mkdir -p ~/.ssh/
-        echo "$DEPLOY_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-        git config --global user.name "$USERNAME"
-        git config --global user.email "$EMAIL"
     - name: Setup Hexo environment
       run: |
         npm install -g hexo-cli
         npm install
-    - name: Deploy Hexo
+    - name: Hexo generate
       run: |
         hexo clean
         hexo g
-        hexo d
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        deploy_key: ${{ secrets.DEPLOY_KEY }}
+        external_repository: Richard-Zheng/richard-zheng.github.io
+        publish_branch: master
+        publish_dir: ./public
