@@ -42,4 +42,4 @@ jobs:
     # 生成并部署
     - name: Deploy
       run: |
-        npx hexo deploy --generate
+        npx hexo deploy --generate --message ${{ format('Site updated: {0}@{1}', github.repository, github.sha) }}
