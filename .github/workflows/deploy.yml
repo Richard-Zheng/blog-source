@@ -17,17 +17,20 @@ jobs:
         wget -O pandoc.deb https://github.com/jgm/pandoc/releases/download/2.13/pandoc-2.13-1-amd64.deb
         sudo dpkg -i pandoc.deb
     - name: Setup Hexo environment
+      run: npm install
+
+    # 从之前设置的 secret 获取部署私钥
+    - name: Set up environment
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
       run: |
-        npm install -g hexo-cli
-        npm install
-    - name: Hexo generate
-      run: |
-        hexo clean
-        hexo g
+        sudo timedatectl set-timezone "Asia/Shanghai"
+        mkdir -p ~/.ssh
+        echo "$DEPLOY_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+    # 生成并部署
     - name: Deploy
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        deploy_key: ${{ secrets.DEPLOY_KEY }}
-        external_repository: Richard-Zheng/richard-zheng.github.io
-        publish_branch: master
-        publish_dir: ./public
+      run: |
+        npx hexo deploy --generate
