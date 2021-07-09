@@ -41,5 +41,7 @@ jobs:
 
     # 生成并部署
     - name: Deploy
+      env:
+        MESSAGE: ${{ format('Site updated {0}@{1}', github.repository, github.sha) }}
       run: |
-        npx hexo deploy --generate --message ${{ format('Site updated: {0}@{1}', github.repository, github.sha) }}
+        npx hexo deploy --generate --message "$MESSAGE"
