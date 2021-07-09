@@ -8,6 +8,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v1
+    - name: Checkout GitHub Pages repository
+      uses: actions/checkout@v2
+      with:
+        # Repository name with owner. For example, actions/checkout
+        # Default: ${{ github.repository }}
+        repository: 'Richard-Zheng/richard-zheng.github.io'
+        path: '.deploy_git'
     - name: Setup Node.js environment
       uses: actions/setup-node@v2-beta
       with:
