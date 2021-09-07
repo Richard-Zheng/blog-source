@@ -141,8 +141,8 @@ f\left( 0,\ n\right) =\left\{
 \begin{array}{l}
 n&, n \bmod 4=0\\
 1&, n \bmod 4=1\\
-0&, n \bmod 4=2\\
-n+1&, n \bmod 4=3.
+n+1&, n \bmod 4=2\\
+0&, n \bmod 4=3.
 \end{array}
 \right.
 $$
