@@ -105,7 +105,7 @@ $$
 我们若是想得到二阶导数的形式，就必须把$x$**看成自变量而不是一个可微的函数**，我们实际上求的是对$\mathrm{d}x$的偏微分
 
 $$
-(\partial ^ 2 y) _ {\mathrm dx}=f''(x){{\mathrm{d}x^2}}
+\left(\partial ^ 2 y\right) _ {\mathrm{d}x}=f''(x)\mathrm{d}x^2
 $$
 
 所以，二阶微分不具有形式不变性。
