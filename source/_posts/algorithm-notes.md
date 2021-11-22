@@ -283,4 +283,65 @@ $$
 
 写出来一交，Wrong Answer.
 
-上面推广的过程是错误的。应该把$(i+1)!$换成$LCM(2,3,\cdots,i+1)$. 把最大公倍数当成乘法这个操作在新生赛初赛中已经搞过一次，现在印象够深刻了。说到底，还是数论相关题目自己做得太少，知识也不牢固。
+上面推广的过程是错误的。应该把$(i+1)!$换成$LCM(2,3,\cdots,i+1)$. 把最小公倍数当成乘法这个操作在新生赛初赛中已经搞过一次，现在印象够深刻了。说到底，还是数论相关题目自己做得太少，知识也不牢固。
+
+### 最大公因数（Greatest Common Divisor）
+
+最大公因数的算法是辗转相除法，基于一个原理：如果$a>b$则$gcd(a,b)=gcd(b,a-b)$. 我们可以验证一下正确性
+$$
+\begin{aligned}
+a&=2^2\times 3^2\times 7=252\\
+b&=2\times 3^3\times 5=270\\
+b-a&=2\times 3^3\times 5-2^2\times 3^2\times 7\\
+&=2\times 3^2\times (3\times 5-2\times 7)\\
+&=2\times 3^2\times 1
+\end{aligned}
+$$
+两个互质的数相减，得到的数也和小的那个数互质。$gcd(a,b)=gcd(b,a-b)=1$.
+
+如果$a-b>b$，那么就继续相减到$a-b<b$为止，所以直接$gcd(a,b)=gcd(b,a\bmod b)$.
+
+代码：
+
+```c++
+int gcd(int a, int b) {
+    int tmp;
+    while (b != 0) {
+        tmp = a;
+        a = b;
+        b = tmp % b;
+    }
+    return a;
+}
+```
+
+### 最小公倍数（Least Common Multiple）
+
+考虑两个数$a$，$b$，将这两个数分解质因数
+$$
+\begin{aligned}
+a&=2^2\times 3^2\times 7=252\\
+b&=2\times 3^3\times 5=270
+\end{aligned}
+$$
+这两个数的最大公因数（Greatest Common Divisor）就是它们质因数的**交集**的乘积
+$$
+gcd(252,270)=2\times 3^2
+$$
+考虑最小公倍数的性质。最小公倍数必须被$a$或$b$​整除，也就是说最小公倍数必须同时包含这两数的所有质因数，所以是它们质因数的**并集**的乘积。怎样得到这个乘积？$a\times b$，然后容斥除掉共同的质因数$gcd(a,b)$就好了。
+$$
+\begin{aligned}
+lcm(252,270)&=\dfrac{252\times 270}{gcd(252,270)}\\
+&=\dfrac{2^2\times 3^2\times 7\times 2\times 3^3\times 5}{2\times 3^2}\\
+&=3780
+\end{aligned}
+$$
+实际编程中一般先除后乘，防止溢出。
+
+代码：
+
+```c++
+int lcm(int a, int b) {
+    return a / gcd(a, b) * b;
+}
+```
