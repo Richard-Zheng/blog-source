@@ -5,6 +5,13 @@ tags: 数学
 mathjax: true
 ---
 
+阅读本文前，你需要：
+
+- 了解极限的定义以及相关的无穷小等概念。
+- 了解导数是什么。
+- 了解极限运算法则和求导法则。
+- 理解“微分是函数的线性近似”
+
 很多人都说《高等数学》难学，一部分缘于求极限、求导和积分是全新的、之前没有接触过的运算，要掌握和熟练运用需要不少苦功夫；另一部分就要归结于编书者用“惯例”来搪塞各种解释的高傲态度。
 
 第二章中，先介绍导数，再介绍微分。这导致前面突然就冒出个$\dfrac{\mathrm{d}}{\mathrm{d}x}$求导符号。然而介绍微分的时候又草草带过。基本上，书中是这样定义微分运算的：对函数$y=f(x)$，如果$x_0$和$x_0+\Delta x$在定义域内且
@@ -112,7 +119,7 @@ $$
 
 现在来说积分。这里直接跳过书上的“记作”论调，重新定义：积分就是微分的**逆运算**。回想起我们对微分的理解：微分就是把一个函数映射到一个“实数到函数的映射”（若嫌麻烦也可以理解成二元函数）上面。那么积分就是微分的**逆映射**。给一个实数到函数的映射（二元函数），就能对应回一个函数上。嗯？等等，微分这个映射并不是单射，不同的函数也可能有相同的微分。那怎么办呢？我们给它打个补丁：由于有相同微分的原函数互相都只相差某个常数，我们就把积分定义成一个实数到函数的映射对应一个函数集合。这个函数集合中的函数互相都只相差某个常数，我们就用$F(x)+C$来表示这个函数集合。
 
-从定义立即可以得到，如果在区间$I$上可导函数$F(x)$的导函数为$f(x)$，即对任一$x\in I$，都有
+从定义立即可以得到，如果在区间$I$上可导函数$F(x)$的导函数为$f(x)$，对任一$x\in I$，都有
 $$
 \int \mathrm{d}F(x)=\int f(x)\mathrm{d}x=F(x)+C.
 $$
@@ -122,10 +129,35 @@ $$
 $$
 这就是换元积分法中的**第一类换元法**。其实，这就是对被积表达式部分积分。
 
+我们也可以反向操作：
+
+令$t=\phi ^{-1}(x)$，则$x=\phi (t)$，有
+$$
+\int f(x)\mathrm{d}x=\int f(\phi (t))\mathrm{d}\phi (t)=\int f(\phi (t))\phi '(t)\mathrm{d}t
+$$
+这就是换元积分法中的**第二类换元法**。
+
+微分法则能启发我们计算积分，比如：对于在区间$I$上的可微函数$f(x)$和$g(x)$有
+$$
+\begin{aligned}
+\mathrm{d}\left[f(x)g(x)\right]&=f(x)\cdot \mathrm{d}g(x)+\mathrm{d}f(x)\cdot g(x)\\
+&=f(x)g'(x)\mathrm{d}x+f'(x)g(x)\mathrm{d}x
+\end{aligned}
+$$
+两边积分得
+$$
+\int \mathrm{d}\left[f(x)g(x)\right]=\int f(x)g'(x)\mathrm{d}x+\int f'(x)g(x)\mathrm{d}x
+$$
+即
+$$
+\int f(x)g'(x)\mathrm{d}x=f(x)g(x)-\int f'(x)g(x)\mathrm{d}x
+$$
+这就是**分部积分法**。
+
 **References:**
 
 1. [迷之记号 dx 到底是什么鬼](https://www.cnblogs.com/li-hua/p/6617366.html)
 2. [什么是微分形式不变性？一阶微分形式不变性与链式法则是等价的吗（两者可互推？）？两者有什么区别？ - 马同学的回答](https://www.zhihu.com/question/30296338/answer/120574352)
 3. [微分符号 dx、dy 表示什么含义？](https://www.zhihu.com/question/26490937)
-4. [Is  $\dfrac{\mathrm{d}}{\mathrm{d}x}$  not a ratio?](https://math.stackexchange.com/questions/21199/is-frac-textrmdy-textrmdx-not-a-ratio)
+4. [Is d/dx not a ratio?](https://math.stackexchange.com/questions/21199/is-frac-textrmdy-textrmdx-not-a-ratio)
 5. [The second differential versus the differential of a differential form](https://math.stackexchange.com/a/3561534/858590)
