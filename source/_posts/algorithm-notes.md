@@ -216,11 +216,7 @@ int BinarySearch(int array[], int n, int value) {
 
 1. `if (array[middle] >= value)` 中的等号去掉；
 
-2. ```c++
-   if (right >= 0 && array[right] == value) {
-       return right;
-   }
-   ```
+2. `if (right >= 0 && array[right] == value) {return right;}`
 
 问题4：找到**第一个大于等于**value的下标
 
@@ -297,7 +293,7 @@ b-a&=2\times 3^3\times 5-2^2\times 3^2\times 7\\
 &=2\times 3^2\times 1
 \end{aligned}
 $$
-两个互质的数相减，得到的数也和小的那个数互质。$gcd(a,b)=gcd(b,a-b)=1$.
+两个互质的数相减，得到的数也和小的那个数互质（[证明](https://math.stackexchange.com/questions/2456631/if-two-numbers-are-relatively-prime-is-their-sum-relatively-prime-to-one-of-the)）。$gcd(a,b)=gcd(b,a-b)=1$.
 
 如果$a-b>b$，那么就继续相减到$a-b<b$为止，所以直接$gcd(a,b)=gcd(b,a\bmod b)$.
 
@@ -345,3 +341,29 @@ int lcm(int a, int b) {
     return a / gcd(a, b) * b;
 }
 ```
+
+## CF1601A Array Elimination
+
+拿到题目简单分析一下：按位取AND，任意下标选择。所以其实数组的排列以及二进制下每一位整体的排列都不重要。由于取AND的性质，每次消去操作对于某一位来说要么消去$k$个1要么无影响。所以，实际上每一位内部0和1是怎样排布的也无任何影响。
+
+那问题就很简单了，某个$k$能够单独消掉每一位的所有1，就等价于能消掉所有位。设第$i$位有$n_i$个1，则对任意$i$需满足$k\mid n_i$. 也就是说$k\bmod gcd(\{n\})=0$.
+
+## CF1515A Phoenix and Gold
+
+从反面分析，假如现在有长为$k$的重量子序列使得$\sum\limits_{j = 1}^{k}w_j = x$，那么要避免这种情况只需要从余下的重量中找出一个不等于$w_k$的重量替换即可。由于该子序列可以任意重新排列，所以只要子序列中任意两项不相等就一定可以找到符合要求的排列。综上，无法避免的情况为整个序列全部相等，且存在$i$使得$\sum\limits_{j = 1}^{i}w_j = x$；或者此时已经没有可用于替换的重量了，也即$\sum\limits_{j = 1}^{n}w_j = x$.
+
+具体怎么实现呢？我又卡了。因为我没注意到这句话：
+
+> It is guaranteed that the weights are **pairwise distinct**.
+
+所以其实只要看后一种情况是否出现就好了，否则都是可以的。我们从前往后加，如果遇到放不了的就先放它的下一个就好了。
+
+我说为啥800难度的会这么复杂。
+
+## CF1515C Phoenix and Towers
+
+不允许任意两个塔楼高度差严格大于$x$，相当于不允许最高的塔楼和最低的塔楼的高度差严格大于$x$. 联系$1 \le h_i \le x$的条件，如果高度差大于$x$，超出的部分必定不止一个块。那么此时显然可以把多出来的那些块补到最低的塔楼上面。因此，不存在无法达到要求的情况。
+
+然后就不知道怎么写了。
+
+官方题解：上述那种情况一定是没有把块加到当前最矮的塔楼上，因此只需一直贪心把块加到当前最矮的塔楼即可。
