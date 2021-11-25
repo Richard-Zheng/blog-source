@@ -275,12 +275,79 @@ $$
 
 ### [F 气球](https://gdutcode.cn/contest/15/problem/F)
 
-首先考虑最简单的情况：$6\mid n$，因为两种买法都可以正好买完，此时我们只需要比较两种买法对应的气球单价即可。对于除6余下的数$n\bmod 6$
+先看两种买法折算的单价：
 
-- 1或2：`min(a, b)`
-- 3：`min(2 * a, b)`
-- 4：`min(2 * a, 2*b)`
-- 5：`min(a, b) + min(2 * a, b)`
+- `3 * a < 2 * b`：两件买法更优。这时最多可能买1个三件，因为买2个三件时显然不如买3个两件。
+- `3 * a > 2 * b`：三件买法更优。这时可能买1或2个两件，买3个两件时就必定不如买2个三件。
+
+代码：
+
+```c++
+int ans = 0;
+if (3 * a < 2 * b) {
+    // choose 2
+    ans = a * ((n + 2 - 1) / 2);
+    if (n >= 3) {
+        ans = min(ans, a * ((n - 3 + 2 - 1) / 2) + b);
+    }
+} else {
+    // choose 3;
+    ans = b * ((n + 3 - 1) / 3);
+    if (n >= 2) {
+        ans = min(ans, b * ((n - 2 + 3 - 1) / 3) + a);
+    }
+    if (n >= 4) {
+        ans = min(ans, b * ((n - 4 + 3 - 1) / 3) + 2 * a);
+    }
+}
+```
+
+### [G zrgg出题](https://gdutcode.cn/contest/15/problem/G)
+
+前$x$个数中$a_i$的倍数的个数为：$\left\lfloor\dfrac{x}{a_i}\right\rfloor$，容斥一下就可得到$[l,r]$之间的倍数个数为$\left\lfloor\dfrac{r}{a_i}\right\rfloor-\left\lfloor\dfrac{l-1}{a_i}\right\rfloor$.
+
+但是需要注意，三个$a_i$之间有公倍数，这些公倍数被重复计算了，所以我们需要减回去。但是减回去的时候同时为三个数的公倍数又被多减了，所以需要再加回去。
+
+```c++
+int n, l, r, k;
+int multiple_count(int a) {
+    return (r / a) - ((l - 1) / a);
+}
+void solve() {
+    cin >> n >> l >> r >> k;
+    int a[3];
+    int ans = 0;
+    for (int i = 0; i < k; i++) {
+        cin >> a[i];
+        ans += multiple_count(a[i]);
+    }
+    for (int i = 0; i < k; i++) {
+        for (int j = i + 1; j < k; j++) {
+            ans -= multiple_count(lcm(a[i], a[j]));
+        }
+    }
+    if (k == 3) {
+        ans += multiple_count(lcm(a[0], lcm(a[1], a[2])));
+    }
+    cout << ans << endl;
+}
+```
+
+### [H a+b(hard)](https://gdutcode.cn/contest/15/problem/H)
+
+基于B题的铺垫，可以直接想到把$b_i$和$c_i$加起来得到
+$$
+d_i=
+\begin{cases}
+a_i+a_{i+1}&1\leq i<n\\
+a_i+a_1&i=n
+\end{cases}
+$$
+当$2\leq i< n$时，$d_i-d_{i-1}=a_{i+1}-a_{i-1}$. 由$n$为奇数，得
+$$
+d_{n-1}-d_{n-2}+d_{n-3}-d_{n-4}+\cdots +d_{2}-d_{1}=a_n-a_1
+$$
+并且$d_n=a_n+a_1$，所以可以直接求出$a_1$. 之后就很简单了。
 
 ## CF1603A Di-visible Confusion
 
