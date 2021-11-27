@@ -167,10 +167,10 @@ int lcm(int a, int b) {
 
 设 $a,b$ 是不全为零的整数，则存在整数 $x,y$, 使得 $ax+by=\gcd(a,b)$.
 
-证明：
+#### 证明：
 
 ```c++
-int gcd(int a, int b){
+int gcd(int a, int b) {
     return b ? gcd(b, a%b) : a;
 }
 ```
@@ -196,11 +196,21 @@ bx+(a\bmod b)y&=bx+\left(a-b\cdot \left\lfloor \dfrac{a}{b} \right\rfloor\right)
 &=ay-b\left(x-\left\lfloor \dfrac{a}{b} \right\rfloor y\right )
 \end{aligned}
 $$
-令$x'=y,y'=x-\left\lfloor \dfrac{a}{b} \right\rfloor y$，可得
+令$x'=y,\ y'=x-\left\lfloor \dfrac{a}{b} \right\rfloor y$，可得
 $$
 ax'+by'=gcd(a,b)
 $$
 用归纳法即可得证。
+
+参考：https://www.cnblogs.com/fusiwei/p/11775503.html
+
+### 扩展欧几里得
+
+为什么叫它扩展欧几里得呢？因为它就是在欧几里得算法（辗转相除法）求得$gcd(a,b)$的基础上，像上面裴蜀定理的证明那样倒着回溯找了一组$x,y$满足
+$$
+ax+by=gcd(a,b)
+$$
+具体代码请看下面的线性同余方程。
 
 ### 线性同余方程（线性丢番图方程）
 
