@@ -1,8 +1,10 @@
 ---
-title: 配置 Flarum
+title: 安装和配置 Flarum
 date: 2021-12-02 19:45:00 +08:00
 tags: 
 ---
+
+本文采用 Ubuntu 20.04 LTS.
 
 ## 安装 MariaDB、PHP 和 Composer
 
@@ -44,7 +46,7 @@ sudo mysql_secure_installation
 
 ```
 sudo mysql -u root -p
-CREATE DATABASE flarum;
+create database flarum character set utf8mb4 collate utf8mb4_unicode_ci;
 CREATE USER 'flarumuser'@'localhost' IDENTIFIED BY 'new_password_here';
 GRANT ALL ON flarum.* TO 'flarumuser'@'localhost' IDENTIFIED BY 'user_password_here' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
