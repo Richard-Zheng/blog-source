@@ -21,7 +21,7 @@ mathjax: true
 
 最暴力的做法就是递归搜一遍：
 
-```c++
+```cpp
 typedef long long ll;
 ll path(ll n) {
     if (n == 0) {
@@ -60,7 +60,7 @@ $$
 
 同样先用递归写
 
-```c++
+```cpp
 typedef long long ll;
 int min_path(int x, int y) {
     if (x == 1 && y == 1) {
@@ -82,6 +82,110 @@ int min_path(int x, int y) {
 换句话说，记忆化的前提是：无论终点是哪一个，到达终点的路径上的点之间走的**全部都是最短距离**，不存在有需要绕路的情况。
 
 这就是**最优子结构**。一个解是最优的，那么它在子问题中也必定是最优的。
+
+再看一道题：
+
+[P1541 [NOIP2010 提高组] 乌龟棋](https://www.luogu.com.cn/problem/P1541)
+
+简单写个暴力递归
+
+```cpp
+#include <cstring>
+#include <iostream>
+using namespace std;
+const int MAXN = 351;
+const int MAXM = 121;
+int a[MAXN];
+int b[MAXM];
+bool used[MAXM];
+int n, m;
+int max_scores(int x) {
+    if (x == 1) {
+        return a[x];
+    } else {
+        int ans = 0;
+        for (int i = 1; i <= m; i++) {
+            if (!used[i]) {
+                used[i] = true;
+                ans = max(ans, max_scores(x - b[i]) + a[x]);
+                used[i] = false;
+            }
+        }
+        return ans;
+    }
+}
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
+    }
+    for (int i = 1; i <= m; i++) {
+        cin >> b[i];
+    }
+    memset(used, 0, sizeof(used));
+    cout << max_scores(n);
+}
+```
+
+这时候，还能记忆化吗？
+
+不行了。因为函数返回的值不但跟终点位置 `x` 有关，还跟使用爬行卡片情况的数组 `used` 有关。如果你把 `used` 也当成参数加进来，那么每次 `used` 的值都会不同，记忆化没有意义。
+
+这是为什么呢？原因就是现在我们的函数 `max_scores(int x)` 不具有最优子结构了。当前贪心地把前 `x` 个格子的分数拿到最大用掉了爬行卡片，后面就会受影响得不到最优的结果。
+
+那，这题就不能用动态规划做了？
+
+仔细观察题目：
+
+> 分成4种不同的类型（$M$ 张卡片中不一定包含所有 4 种类型的卡片，见样例），每种类型的卡片上分别标有 1, 2, 3, 4 四个数字之一。
+
+总共只有四种类型的卡片，而**相同数字的卡片没有任何区别**。重叠子问题！写一下试试：
+
+```cpp
+#include <algorithm>
+#include <cstring>
+#include <iostream>
+#include <vector>
+using namespace std;
+const int MAXN = 351;
+const int MAXM = 121;
+int score[MAXN];
+int n, m;
+int max_scores(vector<int>& use) {
+    if (use[0] == 0 && use[1] == 0 && use[2] == 0 && use[3] == 0) {
+        return score[1];
+    } else {
+        int ans = 0;
+        int x = 1;  // start from 1
+        for (int i = 0; i < 4; i++) {
+            x += use[i] * (i + 1);
+        }
+        for (int i = 0; i < 4; i++) {
+            if (use[i] != 0) {
+                use[i]--;
+                ans = max(ans, max_scores(use) + score[x]);
+                use[i]++;
+            }
+        }
+        return ans;
+    }
+}
+int main() {
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++) {
+        cin >> score[i];
+    }
+    int b;
+    vector<int> cnt = {0, 0, 0, 0};
+    for (int i = 1; i <= m; i++) {
+        cin >> b;
+        cnt[--b]++;
+    }
+    cout << max_scores(cnt);
+}
+```
+
+
 
 ## 形式不重要
 
