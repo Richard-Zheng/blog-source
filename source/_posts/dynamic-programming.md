@@ -87,7 +87,7 @@ int min_path(int x, int y) {
 
 [P1541 [NOIP2010 提高组] 乌龟棋](https://www.luogu.com.cn/problem/P1541)
 
-简单写个暴力递归
+简单写个[暴力递归](https://www.luogu.com.cn/record/64333237)
 
 ```cpp
 #include <cstring>
@@ -131,7 +131,7 @@ int main() {
 
 不行了。因为函数返回的值不但跟终点位置 `x` 有关，还跟使用爬行卡片情况的数组 `used` 有关。如果你把 `used` 也当成参数加进来，那么每次 `used` 的值都会不同，记忆化没有意义。
 
-这是为什么呢？原因就是现在我们的函数 `max_scores(int x)` 不具有最优子结构了。当前贪心地把前 `x` 个格子的分数拿到最大用掉了爬行卡片，后面就会受影响得不到最优的结果。
+这是为什么呢？原因就是现在我们的函数 `max_scores(int x)` 不具有最优子结构了。当前贪心地把前 `x` 个格子的分数拿到最大用掉了爬行卡片，后面就会受影响得不到最优的结果。**正是因为有了最优子结构，子问题才会重叠。**
 
 那，这题就不能用动态规划做了？
 
@@ -139,19 +139,23 @@ int main() {
 
 > 分成4种不同的类型（$M$ 张卡片中不一定包含所有 4 种类型的卡片，见样例），每种类型的卡片上分别标有 1, 2, 3, 4 四个数字之一。
 
-总共只有四种类型的卡片，而**相同数字的卡片没有任何区别**。重叠子问题！写一下试试：
+总共只有四种类型的卡片，而相同数字的卡片没有任何区别。重叠子问题！写一下试试：
 
 ```cpp
 #include <algorithm>
 #include <cstring>
 #include <iostream>
-#include <vector>
 using namespace std;
 const int MAXN = 351;
 const int MAXM = 121;
+const int MAXB = 41;
 int score[MAXN];
 int n, m;
-int max_scores(vector<int>& use) {
+int memory[MAXB][MAXB][MAXB][MAXB];
+int max_scores(int* use) {
+    if (memory[use[0]][use[1]][use[2]][use[3]]) {
+        return memory[use[0]][use[1]][use[2]][use[3]];
+    }
     if (use[0] == 0 && use[1] == 0 && use[2] == 0 && use[3] == 0) {
         return score[1];
     } else {
@@ -167,6 +171,7 @@ int max_scores(vector<int>& use) {
                 use[i]++;
             }
         }
+        memory[use[0]][use[1]][use[2]][use[3]] = ans;
         return ans;
     }
 }
@@ -176,7 +181,7 @@ int main() {
         cin >> score[i];
     }
     int b;
-    vector<int> cnt = {0, 0, 0, 0};
+    int cnt[4] = {0, 0, 0, 0};
     for (int i = 1; i <= m; i++) {
         cin >> b;
         cnt[--b]++;
@@ -185,7 +190,7 @@ int main() {
 }
 ```
 
-
+[顺利 AC](https://www.luogu.com.cn/record/64361130). 我们可以发现，选取递归函数的参数和语义是解决此问题的关键。
 
 ## 形式不重要
 
