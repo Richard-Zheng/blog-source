@@ -38,15 +38,37 @@ ll path(ll n) {
 
 时间复杂度 $O(n!)$，但其实这离答案就差一点。
 
-**Tips:** 你要知道第 $n$ 个阶梯的方案数，你只需要知道到第 $n-1, n-3, n-5,...$ 个阶梯的方案数。
+**Tips:** 你要知道第 $n$ 个阶梯的方案数，你只需要知道到第 $n-1$, $n-3$, $n-5$…… 个阶梯的方案数。
 
 我怎么知道？存下来就行了呗：
+
+```cpp
+typedef long long ll;
+ll memory[MAXN] = {0};
+ll path(ll n) {
+    if (memory[n]) {
+        return memory[n];
+    }
+    if (n == 0) {
+        return 1;
+    } else {
+        ll ans = 0;
+        for (int i = 1; n - i >= 0; i += 2) {
+            ans += count(n - i);
+        }
+        memory[n] = ans;
+        return ans;
+    }
+}
+```
+
+这么一来，时间复杂度就变成 $O(n)$ 了。
+
+思路：因为
 $$
 path\left[ n\right] =path \left[ n-1\right] +path \left[ n-3\right]+...+path \left[ n-(2k-1)\right]
 $$
-这么一来，时间复杂度就变成 $O(n)$ 了，过！
-
-我们回顾一下刚才的思路：把求解 $path\left[ n\right]$ 的问题分解成求解 $path \left[ n-1\right] ,path \left[ n-3\right],...,path \left[ n-(2k-1)\right]$ 的问题，用数组记录每个子问题的解以避免重复计算。
+所以用数组记录每个子问题的解以避免重复计算。
 
 这就是**重叠子问题**，通过对重叠子问题的记忆，可以极大地优化很暴力的算法。
 
