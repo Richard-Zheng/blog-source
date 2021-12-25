@@ -5,7 +5,9 @@ tags: 数学
 mathjax: true
 ---
 
-阅读本文前，你需要：
+## 微分符号和积分符号
+
+准备工作：
 
 - 了解极限的定义以及相关的无穷小等概念。
 - 了解导数是什么。
@@ -161,3 +163,76 @@ $$
 3. [微分符号 dx、dy 表示什么含义？](https://www.zhihu.com/question/26490937)
 4. [Is d/dx not a ratio?](https://math.stackexchange.com/questions/21199/is-frac-textrmdy-textrmdx-not-a-ratio)
 5. [The second differential versus the differential of a differential form](https://math.stackexchange.com/a/3561534/858590)
+
+## 微分中值定理和洛必达法则
+
+在第 1.7 节 无穷小的比较中就介绍了等价无穷小：
+
+> 如果 $\lim \dfrac{\beta}{\alpha}=1$，那么就说 $\beta$ 和 $\alpha$ 是等价无穷小，记作 $\alpha \sim \beta$.
+
+比如
+$$
+\sin x \sim x \ (x\to 0)
+$$
+等价无穷小有什么特别的，以至于要专门给他分配个符号呢？
+
+由极限运算法则，如果 $\lim f(x)=A$，$\lim g(x)=B$，那么
+$$
+\lim[f(x)\cdot g(x)]=\lim f(x)\cdot \lim g(x)=A\cdot B
+$$
+所以
+$$
+\lim_{x\to 0} f(x) = \lim_{x\to 0} f(x) \cdot \lim_{x\to 0}\dfrac{\sin x}{x} = \lim_{x\to 0} \left[ f(x) \cdot \dfrac{\sin x}{x} \right]
+$$
+来看个实际用例：
+$$
+\lim _{x\rightarrow 0}\dfrac{\sin x}{x^{3}+3x}=\lim _{x\rightarrow 0}\left( \dfrac{\sin x}{x^{3}+3x}\cdot \dfrac{x}{\sin x}\right) = \lim _{x\rightarrow 0}\dfrac{x}{x(x^{2}+3)} = \dfrac{1}{3}
+$$
+常用的等价无穷小还有
+$$
+e^x-1\sim x\ (x\to 0)\\
+\ln (1+x)\sim x\ (x\to 0)
+$$
+过了一段时间，你学到了拉格朗日中值公式。如果（省略）则
+$$
+f(b)-f(a)=f'( \xi )(b-a)
+$$
+回到上面那个实际用例。我们可以说，由 $\sin x$ 在 $x=0$ 的某一邻域内可导，所以存在 $\xi \in \mathring{U}(0,x)$ 使得
+$$
+\sin x-\sin 0=\cos \xi(x-0)
+$$
+当 $x\to 0$ 时有
+$$
+\lim_{x\to 0}\dfrac{\sin x}{x}=\lim_{x\to 0}\dfrac{\sin x-\sin 0}{x-0}=\lim_{x\to 0}\cos \xi=1
+$$
+看起来有点意思？还有更有意思的。
+
+如果 $f(x)$ 和 $F(x)$ 在 $a$ 的某去心邻域内可导，对于下面这个极限
+$$
+\lim_{x\to a}\frac{f(x)}{F(x)}
+$$
+我们可以把上面的方法同时应用到分子分母上。也就是说存在 $\xi_1 \in \mathring{U}(a,x), \xi_2 \in \mathring{U}(a,x)$​ 使得
+$$
+f(x)-f(a)=f'(\xi_1)(x-a)\\
+F(x)-F(a)=F'(\xi_2)(x-a)
+$$
+那么就有
+$$
+\frac{f(x)-f(a)}{F(x)-F(a)}=\frac{f'(\xi_1)(x-a)}{F'(\xi_2)(x-a)}=\frac{f'(\xi_1)}{F'(\xi_2)}
+$$
+柯西中值定理！
+
+如果当 $x\to a$ 时函数 $f(x)$ 和 $F(x)$ 都趋于零，且 $F'(x)\neq 0$，有
+$$
+\lim_{x\to a}\dfrac{f(x)}{F(x)}=\lim_{x\to 0}\dfrac{f(x)-f(a)}{F(x)-F(a)}=\lim_{x\to 0}\frac{f'(\xi_1)(x-a)}{F'(\xi_2)(x-a)}=\lim_{x\to 0}\frac{f'(\xi_1)}{F'(\xi_2)}
+$$
+洛必达法则！
+
+又过了一段时间，你学到了泰勒公式，它是拉格朗日中值公式的推广（令 $n=2m$）
+$$
+\begin{align}
+\sin \left(x\right)&= x-{\frac {x^{3}}{3!}}+{\frac {x^{5}}{5!}}-{\frac {x^{7}}{7!}}+\cdots +(-1)^{m-1}\dfrac{x^{2m-1}}{(2m-1)!}+R_{2m}(x)\\
+e^{x}&=1+x+{\frac {x^{2}}{2!}}+{\frac {x^{3}}{3!}}+\cdots +\frac{x^{n-1}}{(n-1)!} +R_{n}(x)\\
+\ln(1+x)&=x-{\frac {x^{2}}{2}}+{\frac {x^{3}}{3}}-\cdots+(-1)^{n-1}\dfrac{1}{n}x^n+R_{n}(x)
+\end{align}
+$$
