@@ -164,7 +164,9 @@ $$
 4. [Is d/dx not a ratio?](https://math.stackexchange.com/questions/21199/is-frac-textrmdy-textrmdx-not-a-ratio)
 5. [The second differential versus the differential of a differential form](https://math.stackexchange.com/a/3561534/858590)
 
-## 微分中值定理和洛必达法则
+## 从等价无穷小到泰勒公式
+
+### 启程
 
 在第 1.7 节 无穷小的比较中就介绍了等价无穷小：
 
@@ -190,14 +192,19 @@ $$
 $$
 常用的等价无穷小还有
 $$
-e^x-1\sim x\ (x\to 0)\\
-\ln (1+x)\sim x\ (x\to 0)
+\begin{aligned}
+e^x-1&\sim x\ (x\to 0)\\
+\ln (1+x)&\sim x\ (x\to 0)
+\end{aligned}
 $$
+
+### 岔路
+
 过了一段时间，你学到了拉格朗日中值公式。如果（省略）则
 $$
 f(b)-f(a)=f'( \xi )(b-a)
 $$
-回到上面那个实际用例。我们可以说，由 $\sin x$ 在 $x=0$ 的某一邻域内可导，所以存在 $\xi \in \mathring{U}(0,x)$ 使得
+回到上面那个实际用例。我们可以说，由 $\sin x$ 在 $x=0$ 的某一去心邻域内可导，所以存在 $\xi \in \mathring{U}(0,x)$ 使得
 $$
 \sin x-\sin 0=\cos \xi(x-0)
 $$
@@ -207,26 +214,79 @@ $$
 $$
 看起来有点意思？还有更有意思的。
 
-如果 $f(x)$ 和 $F(x)$ 在 $a$ 的某去心邻域内可导，对于下面这个极限
+如果 $f(x)$ 和 $g(x)$ 在 $a$ 的某去心邻域内可导，当 $x\to a$ 时函数 $f(x)$ 和 $g(x)$ 都趋于零，对于下面这个极限
 $$
-\lim_{x\to a}\frac{f(x)}{F(x)}
+\lim_{x\to a}\frac{f(x)}{g(x)}
 $$
-我们可以把上面的方法同时应用到分子分母上。也就是说存在 $\xi_1 \in \mathring{U}(a,x), \xi_2 \in \mathring{U}(a,x)$​ 使得
-$$
-f(x)-f(a)=f'(\xi_1)(x-a)\\
-F(x)-F(a)=F'(\xi_2)(x-a)
-$$
-那么就有
-$$
-\frac{f(x)-f(a)}{F(x)-F(a)}=\frac{f'(\xi_1)(x-a)}{F'(\xi_2)(x-a)}=\frac{f'(\xi_1)}{F'(\xi_2)}
-$$
-柯西中值定理！
+我们可以把上面的方法同时应用到分子分母上。我们为了连续性假定 $f(a)=g(a)=0$ 则此时两函数在 $a$ 的某邻域内连续。
 
-如果当 $x\to a$ 时函数 $f(x)$ 和 $F(x)$ 都趋于零，且 $F'(x)\neq 0$，有
+存在 $\xi_1 \in \mathring{U}(a,x), \xi_2 \in \mathring{U}(a,x)$​ 使得
 $$
-\lim_{x\to a}\dfrac{f(x)}{F(x)}=\lim_{x\to 0}\dfrac{f(x)-f(a)}{F(x)-F(a)}=\lim_{x\to 0}\frac{f'(\xi_1)(x-a)}{F'(\xi_2)(x-a)}=\lim_{x\to 0}\frac{f'(\xi_1)}{F'(\xi_2)}
+\begin{aligned}
+f(x)-f(a)&=f'(\xi_1)(x-a)\\
+g(x)-g(a)&=g'(\xi_2)(x-a)
+\end{aligned}
 $$
-洛必达法则！
+
+若 $g'(x)\neq 0$，有
+$$
+\lim_{x\to a}\dfrac{f(x)}{g(x)}=\lim_{x\to a}\dfrac{f(x)-f(a)}{g(x)-g(a)}=\lim_{x\to a}\frac{f'(\xi_1)(x-a)}{g'(\xi_2)(x-a)}=\lim_{x\to a}\frac{f'(x)}{g'(x)}
+$$
+洛必达法则！实际上证明洛必达法则并不依赖柯西中值定理。
+
+在这个过程中你可能会发现
+$$
+\frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi_1)(b-a)}{g'(\xi_2)(b-a)}=\frac{f'(\xi_1)}{g'(\xi_2)}
+$$
+柯西中值定理？其实并不是，柯西中值定理还需要 $\xi_1=\xi_2$​，构造
+$$
+h(x) = [f(x) - f(a)][g(b) - g(a)] - [g(x) - g(a)][f(b) - f(a)].
+$$
+显然 $h(a)=h(b)=0$​，由罗尔中值定理得
+$$
+0 = h'(\xi) = f'(\xi)(g(b) - g(a)) - g'(\xi)(f(b) - f(a))
+$$
+
+为什么同济高数书上要写成这么别扭的样子呢？
+$$
+h(x)=f(x)-\frac{f(b)-f(a)}{g(b)-g(a)}g(x)
+$$
+我猜大概是为了强调 $g(b)-g(a)\neq 0$ 吧（由 $g'(x)\neq 0$ 推出）
+
+再来看一个洛必达法则的证明：
+
+若 $f, g : (a, b) \to R$ 在 $x_0 \in (a,b)$ 上可导，且 $f(x_0)=g(x_0)=0$，$g'(x_0)\neq 0$. 则
+$$
+\frac{f'(x_0)}{g'(x_0)}=\frac{\lim_{x\to x_0}{\frac{f(x)-f(x_0)}{x-x_0}}}{\lim_{x\to x_0}{\frac{g(x)-g(x_0)}{x-x_0}}}=\lim_{x\to x_0}{\frac{f(x)-f(x_0)}{g(x)-g(x_0)}}=\lim_{x\to x_0}{\frac{f(x)}{g(x)}}
+$$
+这就证完了？能用一行证明，为什么书上要用柯西中值定理绕一大圈？
+
+请注意洛必达法则的条件
+
+> 1. 当 $x\to x_0$ 时，函数 $f(x)$ 及 $g(x)$ 都趋于零.
+> 2. 在点 $x_0$ 的**某去心邻域内**，$f'(x)$ 及 $g'(x)$ 都存在且 $g'(x)\neq 0$.
+> 3. $\lim_{x\to x_0}{\frac{f'(x)}{g'(x)}}$ 存在（或为无穷大）.
+
+其中第 1、2 点都不一样，但是证明时假定了 $f(x_0)=g(x_0)=0$ 所以实际上第 1 点没有区别。最关键的是第 2 点：$f(x)$ 和 $g(x)$ 只需要在 $x_0$ 的某去心邻域可导，不需要在 $x_0$ 可导。与之相对应，公式中也是取两函数导数的比值的极限。
+
+### 迷途
+
+我们来看一道 经 典 例 题：
+$$
+\lim_{x\to0}\left(\frac{e^x +xe^x}{e^x-1}-\frac{1}{x}\right)
+$$
+你可能会这么写：
+$$
+\begin{aligned}
+\lim_{x\to 0}\left(\frac{e^x +xe^x}{e^x-1}-\frac{1}{x}\right)&=\lim_{x\to 0}\frac{e^x +xe^x}{e^x-1} - \lim_{x\to 0}\frac{1}{x} \\
+&=\lim_{x\to 0}\frac{e^x +xe^x}{e^x-1}\times \lim_{x\to 0}\frac{e^x-1}{x}-\lim_{x\to 0}\frac{1}{x} \\
+&=\lim_{x\to 0}\left(\frac{e^x +xe^x}{e^x-1} \times \frac{e^x-1}{x}\right)-\lim_{x\to 0}\frac{1}{x} \\
+&=\lim_{x\to 0}\left(\frac{e^x +xe^x}{x}-\frac{1}{x}\right)
+\end{aligned}
+$$
+
+
+### 终点
 
 又过了一段时间，你学到了泰勒公式，它是拉格朗日中值公式的推广（令 $n=2m$）
 $$
@@ -236,3 +296,8 @@ e^{x}&=1+x+{\frac {x^{2}}{2!}}+{\frac {x^{3}}{3!}}+\cdots +\frac{x^{n-1}}{(n-1)!
 \ln(1+x)&=x-{\frac {x^{2}}{2}}+{\frac {x^{3}}{3}}-\cdots+(-1)^{n-1}\dfrac{1}{n}x^n+R_{n}(x)
 \end{align}
 $$
+
+References:
+
+1. [Cauchy's Mean Value Theorem and L'Hopital's rule](http://www.math.pitt.edu/~sparling/23012/23012lhopital1/node1.html)
+2. [(PDF)Lecture 7 : Cauchy Mean Value Theorem, L'Hospital Rule](https://home.iitk.ac.in/~psraj/mth101/lecture_notes/lecture7.pdf)
