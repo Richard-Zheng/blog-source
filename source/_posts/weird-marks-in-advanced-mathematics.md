@@ -154,7 +154,18 @@ $$
 $$
 \int f(x)g'(x)\mathrm{d}x=f(x)g(x)-\int f'(x)g(x)\mathrm{d}x
 $$
-这就是**分部积分法**。
+这就是**分部积分法**。也可以写成简洁形式
+$$
+\int u\mathrm{d}v=uv-\int v\mathrm{d}u
+$$
+如果你想要理解这些积分法则，这里有一个线索：第一、第二类换元法对应的是复合函数，分部积分法对应的是两个函数的乘积运算。[这个视频](https://www.bilibili.com/video/BV1qW411N7FU?p=4) 也许也能帮助你更直观地理解。
+
+学积分的时候应该注意思考积分法则的逆运算（逆操作）是什么。如果能明白简单的积分形式是怎么变复杂的，看到复杂的积分也就不难化简了。上面这三种积分法则的逆运算是什么呢？
+
+很容易发现第一类、第二类换元法是互为逆运算的。而分部积分法的逆运算是它自己
+$$
+\int u\mathrm{d}v=uv-\int v\mathrm{d}u=uv-\left(uv- \int u\mathrm{d}v \right)=\int u\mathrm{d}v
+$$
 
 **References:**
 
@@ -234,7 +245,7 @@ $$
 $$
 洛必达法则！实际上证明洛必达法则并不依赖柯西中值定理。
 
-在这个过程中你可能会发现
+另外，在这个过程中你可能会发现
 $$
 \frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi_1)(b-a)}{g'(\xi_2)(b-a)}=\frac{f'(\xi_1)}{g'(\xi_2)}
 $$
@@ -259,7 +270,7 @@ $$
 $$
 \frac{f'(x_0)}{g'(x_0)}=\frac{\lim_{x\to x_0}{\frac{f(x)-f(x_0)}{x-x_0}}}{\lim_{x\to x_0}{\frac{g(x)-g(x_0)}{x-x_0}}}=\lim_{x\to x_0}{\frac{f(x)-f(x_0)}{g(x)-g(x_0)}}=\lim_{x\to x_0}{\frac{f(x)}{g(x)}}
 $$
-这就证完了？能用一行证明，为什么书上要用柯西中值定理绕一大圈？
+这就证完了？能用一行证明，为什么上面要绕一大圈？
 
 请注意洛必达法则的条件
 
@@ -281,10 +292,44 @@ $$
 \lim_{x\to 0}\left(\frac{e^x +xe^x}{e^x-1}-\frac{1}{x}\right)&=\lim_{x\to 0}\frac{e^x +xe^x}{e^x-1} - \lim_{x\to 0}\frac{1}{x} \\
 &=\lim_{x\to 0}\frac{e^x +xe^x}{e^x-1}\times \lim_{x\to 0}\frac{e^x-1}{x}-\lim_{x\to 0}\frac{1}{x} \\
 &=\lim_{x\to 0}\left(\frac{e^x +xe^x}{e^x-1} \times \frac{e^x-1}{x}\right)-\lim_{x\to 0}\frac{1}{x} \\
-&=\lim_{x\to 0}\left(\frac{e^x +xe^x}{x}-\frac{1}{x}\right)
+&=\lim_{x\to 0}\left(\frac{e^x +xe^x}{x}-\frac{1}{x}\right) \\
+&=\lim_{x\to 0}\frac{e^x +xe^x-1}{x} \\
+&=\lim_{x\to 0}\left(2e^x-xe^x\right) \\
+&=2
 \end{aligned}
 $$
 
+然而！答案是 $\frac{2}{3}$.
+
+错在哪呢？其实第一步就错了，拆出来成了 $\infty -\infty$，不能拆。如果你不是这么做的但是得到了错误的结果，请自行根据 [这篇文章](https://zhuanlan.zhihu.com/p/62029838) 对号入座。
+
+辅导书和老师可能会告诉你，等价无穷小的用法仅限于极限值整体乘以 1 再代换！这种说法确实没错，但是事情是不是就这么简单地结束了呢？为什么有的情况下替换不会出现问题呢？
+
+回想起上面介绍微分时提到的
+$$
+\Delta y=f'\left( x\right) \Delta x+o\left( \Delta x\right) \Leftrightarrow \mathrm{d}y=f'(x)\mathrm{d}x.
+$$
+对于 $f(x)=\sin x$ 来说
+$$
+\Delta (\sin 0)=\cos 0 \Delta x+o\left( \Delta x\right)=\Delta x+o\left( \Delta x\right)
+$$
+也就是说在 $x\to 0$ 时，$\Delta x=x-0=x$
+$$
+\lim_{x\to 0}{\sin x}=\sin 0 +\Delta (\sin 0)=x+o\left(x\right)
+$$
+我们可以看到 $\sin x$ 和 $x$ 之间差较 $x$ 高阶的无穷小。
+
+那么啥时候会不能换呢？
+
+就是除了无穷小以外的量全部都被消去的情况，这时候高阶无穷小才会左右极限的结果，而它会受到等价无穷小替换的影响而不准确。
+
+也就是说
+
+> 已知 $\lim_{x\to x_0}{\frac{\alpha_1}{\alpha_2}}$  存在， $\alpha_1,\alpha_{2},\beta_{1},\beta_{2}$ 都是 $x\rightarrow x_0$ 的无穷小量，且 $\alpha_1\sim\beta_1$，$\alpha_{2}\sim\beta_{2}$.
+>
+> 若 $\lim_{x\rightarrow x_0}{\frac{\alpha_1}{\alpha_2}} \neq 1$ （两者的泰勒展开的第一项不相同），则 $\alpha_1-\alpha_2\sim \beta_1-\beta_2)$;
+>
+> 若 $\lim_{x\rightarrow x_0}{\frac{\alpha_1}{\alpha_2}} \neq -1$（两者的泰勒展开的第一项不互为相反数），则 $\alpha_1+\alpha_2\sim\beta_1+\beta_2$.
 
 ### 终点
 
@@ -301,3 +346,5 @@ References:
 
 1. [Cauchy's Mean Value Theorem and L'Hopital's rule](http://www.math.pitt.edu/~sparling/23012/23012lhopital1/node1.html)
 2. [(PDF)Lecture 7 : Cauchy Mean Value Theorem, L'Hospital Rule](https://home.iitk.ac.in/~psraj/mth101/lecture_notes/lecture7.pdf)
+3. [高数常见坑点：等价无穷小](https://zhuanlan.zhihu.com/p/62029838)
+3. [“等价无穷小量的替换”的详析 - 李亦督的文章 - 知乎](https://zhuanlan.zhihu.com/p/99373470)
