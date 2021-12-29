@@ -245,6 +245,10 @@ $$
 $$
 洛必达法则！实际上证明洛必达法则并不依赖柯西中值定理。
 
+上面的推导启示我们，洛必达法则和等价无穷小有某种意义上的联系。若函数 $f(x)$ 和 $g(x)$ 在 $x=x_0$ 的某邻域内 $n$ 阶可导，且当 $x\to x_0$ 时 $f(x)\sim g(x)$ 则
+$$
+\lim_{x\to x_0}\dfrac{f(x)}{g(x)}=\lim_{x\to x_0}\frac{f^{(n)}(x)}{g^{(n)}(x)}=1
+$$
 另外，在这个过程中你可能会发现
 $$
 \frac{f(b)-f(a)}{g(b)-g(a)}=\frac{f'(\xi_1)(b-a)}{g'(\xi_2)(b-a)}=\frac{f'(\xi_1)}{g'(\xi_2)}
@@ -301,25 +305,15 @@ $$
 
 然而！答案是 $\frac{2}{3}$.
 
-错在哪呢？其实第一步就错了，拆出来成了 $\infty -\infty$，不能拆。如果你不是这么做的但是得到了错误的结果，请自行根据 [这篇文章](https://zhuanlan.zhihu.com/p/62029838) 对号入座。
+错在哪呢？其实第一步就错了，拆出来成了 $\infty -\infty$，而极限运算法则**只在两极限存在时才成立**，不能拆。如果你不是这么做的但是得到了错误的结果，请自行根据 [这篇文章](https://zhuanlan.zhihu.com/p/62029838) 对号入座。
 
 辅导书和老师可能会告诉你，等价无穷小的用法仅限于极限值整体乘以 1 再代换！这种说法确实没错，但是事情是不是就这么简单地结束了呢？为什么有的情况下替换不会出现问题呢？
 
-回想起上面介绍微分时提到的
+请看同济高数第 1-7 节定理 1: $\beta$ 和 $\alpha$ 是等价无穷小的充分必要条件为
 $$
-\Delta y=f'\left( x\right) \Delta x+o\left( \Delta x\right) \Leftrightarrow \mathrm{d}y=f'(x)\mathrm{d}x.
+\beta=\alpha + o(\alpha)
 $$
-对于 $f(x)=\sin x$ 来说
-$$
-\Delta (\sin 0)=\cos 0 \Delta x+o\left( \Delta x\right)=\Delta x+o\left( \Delta x\right)
-$$
-也就是说在 $x\to 0$ 时，$\Delta x=x-0=x$
-$$
-\lim_{x\to 0}{\sin x}=\sin 0 +\Delta (\sin 0)=x+o\left(x\right)
-$$
-我们可以看到 $\sin x$ 和 $x$ 之间差较 $x$ 高阶的无穷小。
-
-那么啥时候会不能换呢？
+可以看出，两个等价无穷小之间差了一个高阶无穷小。那么什么时候不能用等价无穷小呢？
 
 就是除了无穷小以外的量全部都被消去的情况，这时候高阶无穷小才会左右极限的结果，而它会受到等价无穷小替换的影响而不准确。
 
@@ -327,22 +321,36 @@ $$
 
 > 已知 $\lim_{x\to x_0}{\frac{\alpha_1}{\alpha_2}}$  存在， $\alpha_1,\alpha_{2},\beta_{1},\beta_{2}$ 都是 $x\rightarrow x_0$ 的无穷小量，且 $\alpha_1\sim\beta_1$，$\alpha_{2}\sim\beta_{2}$.
 >
-> 若 $\lim_{x\rightarrow x_0}{\frac{\alpha_1}{\alpha_2}} \neq 1$ （两者的泰勒展开的第一项不相同），则 $\alpha_1-\alpha_2\sim \beta_1-\beta_2)$;
+> 若 $\lim_{x\rightarrow x_0}{\frac{\alpha_1}{\alpha_2}} \neq 1$ （两者的泰勒展开的第一项不相同），则 $\alpha_1-\alpha_2\sim \beta_1-\beta_2$;
 >
 > 若 $\lim_{x\rightarrow x_0}{\frac{\alpha_1}{\alpha_2}} \neq -1$（两者的泰勒展开的第一项不互为相反数），则 $\alpha_1+\alpha_2\sim\beta_1+\beta_2$.
 
 ### 终点
 
+上面看似已经把等价无穷小的用法说清楚了，但是还有很多隐藏的问题。比如说，极限运算法则必须要两个极限存在才成立，那么如果我要求的极限本来就不存在呢？难道我每次用之前还要证明这个极限存在？
+
+所以我们不如用回等价无穷小的充要条件
+$$
+\alpha \sim \beta \Leftrightarrow \beta=\alpha + o(\alpha)
+$$
+等价替换永远是最直接、最少出错的。
+
+而实际上我们用等价无穷小的时候几乎从来都是换成多项式函数，因为它好化简、好求极限。
+
 又过了一段时间，你学到了泰勒公式，它是拉格朗日中值公式的推广（令 $n=2m$）
 $$
 \begin{align}
-\sin \left(x\right)&= x-{\frac {x^{3}}{3!}}+{\frac {x^{5}}{5!}}-{\frac {x^{7}}{7!}}+\cdots +(-1)^{m-1}\dfrac{x^{2m-1}}{(2m-1)!}+R_{2m}(x)\\
-e^{x}&=1+x+{\frac {x^{2}}{2!}}+{\frac {x^{3}}{3!}}+\cdots +\frac{x^{n-1}}{(n-1)!} +R_{n}(x)\\
-\ln(1+x)&=x-{\frac {x^{2}}{2}}+{\frac {x^{3}}{3}}-\cdots+(-1)^{n-1}\dfrac{1}{n}x^n+R_{n}(x)
+\sin \left(x\right)&= x-{\frac {x^{3}}{3!}}+{\frac {x^{5}}{5!}}-{\frac {x^{7}}{7!}}+\cdots +(-1)^{m-1}\dfrac{x^{2m-1}}{(2m-1)!}+o(x^{2m})\\
+e^{x}&=1+x+{\frac {x^{2}}{2!}}+{\frac {x^{3}}{3!}}+\cdots +\frac{x^{n-1}}{(n-1)!} +o(x^n)\\
+\ln(1+x)&=x-{\frac {x^{2}}{2}}+{\frac {x^{3}}{3}}-\cdots+(-1)^{n-1}\dfrac{1}{n}x^n+o(x^n)
 \end{align}
 $$
 
-References:
+接下来不用多说了吧。**用泰勒公式，别用等价无穷小。**
+
+后记：这篇文章写的很混乱，中途删了又写，写了又删。最后终于在高数期末考前仓促结尾，行文思路混乱，更别说严谨性。现在回头反思，总感觉自己太过于相信自己的所谓直觉，推导一番后又发现和目标不搭边。总结：想的太多，读的太少，算的更少。
+
+**References:**
 
 1. [Cauchy's Mean Value Theorem and L'Hopital's rule](http://www.math.pitt.edu/~sparling/23012/23012lhopital1/node1.html)
 2. [(PDF)Lecture 7 : Cauchy Mean Value Theorem, L'Hospital Rule](https://home.iitk.ac.in/~psraj/mth101/lecture_notes/lecture7.pdf)
