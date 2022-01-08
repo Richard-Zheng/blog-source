@@ -175,6 +175,63 @@ $$
 4. [Is d/dx not a ratio?](https://math.stackexchange.com/questions/21199/is-frac-textrmdy-textrmdx-not-a-ratio)
 5. [The second differential versus the differential of a differential form](https://math.stackexchange.com/a/3561534/858590)
 
+## 积分中的魔法
+
+积分有什么用呢？
+
+要解释积分的用途，我们要提一个很经典的问题：求曲边梯形的面积。也就是说，我们想知道由两条垂直于$x$轴的直线，一条函数曲线$y = f(x)$和$x$轴围成区域的面积。
+
+首先我们得岔开话题，先讲积分的一个有趣的性质。
+
+我们学过拉格朗日中值定理（均值定理）：函数$f(x)$若在$[a,b]$内连续，$(a,b)$内可导，存在$\xi \in (a,b)$使
+$$
+f(b)-f(a)=f'( \xi )(b-a)
+$$
+我们可以尝试把这个定理应用到原函数$F(x)$上
+$$
+F(b)-F(a)=F'( \xi )(b-a)=f( \xi )(b-a)
+$$
+等式右边是什么意思呢？它看着像是长为$f(\xi )$宽为$b-a$的长方形的面积。
+
+微积分的核心思想之一，是把宏观的、难以解决的问题转化为很多局部的、近似的问题。
+
+我们可以这么写
+$$
+F(x+\Delta x)-F(x)=f( \xi )\Delta x
+$$
+等式右边的意思是说，在一个很小的宽为$\Delta x$的区间内，其中一点$\xi$的函数值为长，$\Delta x$为宽围成的面积。
+
+微积分的核心思想之二是极限。在不断趋近的过程中证明要多近有多近。
+
+在这里我们首先要做的是趋近。证明当$\Delta x \to 0$时$f( \xi )\Delta x$可以任意的接近$\Delta x$为宽的那个区间内的曲边梯形面积。也就是说
+$$
+\Delta A=\lim_{\Delta x \to 0}{f( \xi )\Delta x}
+$$
+好吧，这个证明有点冗长，有时间再补。
+
+下一步，就是积。把区间$[a,b]$分成$n$份，每一份的宽度为$\Delta x = \frac{b-a}{n}$，左右端点为$[x_{i-1},x_i]$，有
+$$
+F(x_n)-F(x_{n-1})+F(x_{n-1})-F(x_{n-2})+\cdots+F(x_1)-F(x_0)=\sum ^{n}_{i=1}\left[f\left( \xi _{i}\right) \Delta x \right]
+$$
+这时候，奇迹发生了：
+$$
+F(x_n)-F(x_0)=F(b)-F(a)=\sum ^{n}_{i=1}\left[ f\left( \xi _{i}\right) \Delta x \right]
+$$
+左边中间的项全部被消掉，这时候我们发现，等式左边跟$n$**无关**了。也就是说，我们可以自信地写下
+$$
+F(b)-F(a)=\lim_{n\to \infty}{\sum ^{n}_{i=1}{\left[ \frac{f\left( \xi _{i}\right) (b-a)}{n}\right]}}=\lim_{n\to \infty}{\sum ^{n}_{i=1}{\Delta A_i}}=A
+$$
+原本看上去不可能的问题，就这么被轻易解决了。
+
+由于很多问题都可以用类似求曲边梯形的方法解答，我们专门给$F(b)-F(a)$分配了符号，并称之为$f(x)$在区间$[a,b]$上的**定积分**：
+$$
+\int_{a}^{b} f(x)\mathrm{d}x=F(b)-F(a)
+$$
+上面的性质也成了积分中值定理
+$$
+\int_{a}^{b} f(x)\mathrm{d}x=f( \xi )(b-a)
+$$
+
 ## 从等价无穷小到泰勒公式
 
 ### 启程
