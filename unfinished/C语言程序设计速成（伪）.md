@@ -11,6 +11,15 @@
 
 ## 标识符
 
+*`identifier`*:
+ *`identifier-nondigit`*
+ *`identifier`* *`identifier-nondigit`*
+ *`identifier`* *`digit`*
+
+*`identifier-nondigit`*:
+ *`nondigit`* 下划线及英文字母
+ *`universal-character-name`* Unicode 字符
+
 标识符由字母、数字、下划线组成，并且首字母不能是数字。（与 `0x01` 等记法冲突）
 
 ## 逗号运算符
@@ -54,3 +63,19 @@ a = b = 4.5; // 4.5 is a double, it gets converted to float and stored into b
 [声明 - 自然语言转换](https://cdecl.org/)
 
 http://c-faq.com/decl/cdecl1.html
+
+## 常量
+
+不带 **`f`**、**`F`**、**`l`** 或 **`L`** 后缀的浮点常量类型为 **`double`**。 如果后缀是字母 **`f`** 或 **`F`**，则常量的类型为 **`float`**。 如果后缀是字母 **`l`** 或 **`L`**，则常量的类型为 **`long double`**。 
+
+*`unsigned-suffix`*: one of
+ **`u`** **`U`**
+
+*`long-suffix`*: one of
+ **`l`** **`L`**
+
+*`long-long-suffix`*: one of
+ **`ll`** **`LL`**
+
+*`floating-suffix`*: one of
+ **`f`** **`l`** **`F`** **`L`**

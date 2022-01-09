@@ -219,7 +219,7 @@ F(x_n)-F(x_0)=F(b)-F(a)=\sum ^{n}_{i=1}\left[ f\left( \xi _{i}\right) \Delta x \
 $$
 左边中间的项全部被消掉，这时候我们发现，等式左边跟$n$**无关**了。也就是说，我们可以自信地写下
 $$
-F(b)-F(a)=\lim_{n\to \infty}{\sum ^{n}_{i=1}{\left[ \frac{f\left( \xi _{i}\right) (b-a)}{n}\right]}}=\lim_{n\to \infty}{\sum ^{n}_{i=1}{\Delta A_i}}=A
+F(b)-F(a)=\lim_{n\to \infty}{\sum ^{n}_{i=1}{\frac{f\left( \xi _{i}\right) (b-a)}{n}}}=\lim_{n\to \infty}{\sum ^{n}_{i=1}{\Delta A_i}}=A
 $$
 原本看上去不可能的问题，就这么被轻易解决了。
 
