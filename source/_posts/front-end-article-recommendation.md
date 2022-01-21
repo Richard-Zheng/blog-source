@@ -8,6 +8,10 @@ tags:
 
 ## JavaScript
 
+通用
+
+- [现代 JavaScript 教程](https://zh.javascript.info/)（The Modern JavaScript Tutorial）
+
 理解 this 和函数调用
 
 - [Understanding JavaScript Function Invocation and "this"](https://yehudakatz.com/2011/08/11/understanding-javascript-function-invocation-and-this/)
@@ -29,7 +33,7 @@ tags:
 
 函数式编程
 
-- [Mostly adequate guide to functional programming (in javascript)](https://github.com/MostlyAdequate/mostly-adequate-guide)
+- [Mostly adequate guide to functional programming (in javascript)](https://github.com/MostlyAdequate/mostly-adequate-guide)（[中文译版](https://github.com/llh911001/mostly-adequate-guide-chinese)）
 
 ## CSS
 
