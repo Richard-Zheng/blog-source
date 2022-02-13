@@ -14,3 +14,12 @@ mathjax: true
 尽管指定运算结果会被赋值/加到一个较大的数据类型（比如 long long），运算过程中仍然会有精度问题。
 
 解决方案：保证所有运算中变量数据类型一致。
+
+## `std::cout` 输出浮点数精度问题
+
+`std::cout << std::cout.precision();` 默认输出为 6. 即最多输出小数点后 6 位。
+
+解决方案：
+
+- `std::cout << std::setprecision(int n)`
+- `printf("pi = %.5f", 4*atan(1.0));`
