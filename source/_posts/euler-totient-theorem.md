@@ -1,7 +1,8 @@
 ---
-title: Euler’s Totient Theorem
+title: Euler's Totient Theorem
 date: 2022-02-20 12:21:00
 tags: 数学
+mathjax: true
 ---
 
 > 本篇为交互式 Jupyter Notebook 文档，请在 [这里](https://note.stay-curious.win/) 查看完整版。
