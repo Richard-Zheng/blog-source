@@ -1,6 +1,6 @@
 ---
 title: Number theory notes
-date: 2022-02-20 12:21:00
+date: 2022-03-10 11:34:00
 tags: Math
 mathjax: true
 ---
@@ -66,19 +66,19 @@ g=gcd(r_n,0) &= 1\times r_n + 0\times r_{n+1}=r_n\\
 \end{align*}
 $$
 
-We may wonder if there exists a linear combination such that $g=ax+by$. In fact, this is what Bezout’s theorem says.
+We may wonder if there exists a linear combination such that $g=ax+by$. In fact, this is what Bezout's theorem says.
 
 **Proof** by induction.
 
-*Base case*:
+*Base case:*
 
 $$
 g= 1\times r_n + 0\times r_{n+1}
 $$
 
-*Induction step*:
+*Induction step:*
 
-Given that $r_{j+1}=r_{j-1}-r_{j}q_{j}$, $g=r_{j}x_{j}+r_{j+1}y_{j}$
+Given that $r_{j+1}=r_{j-1}-r_{j}q_{j}$
 
 $$
 \begin{align*}
@@ -108,14 +108,14 @@ def exgcd(a, b):
 
 
 x, y = exgcd(10319, 2312)
-print('x =',x,', y =',y, ', gcd =',a*x+b*y)
+print('x =', x, ', y =', y, ', gcd =', a*x+b*y)
 ```
 
 References:
 
 - [The Euclidean Algorithm](http://gauss.math.luc.edu/greicius/Math201/Fall2012/Lectures/euclidean-algorithm.article.pdf)
 
-### Linear Congruences
+## Linear Congruences
 
 Suppose you want to solve
 
@@ -131,10 +131,3 @@ $$
 ax \equiv c \pmod b \iff ax - c = by
 $$
 
-Then we will compute this by induction.
-
-Base case:
-
-$$
-a \times 1 + 0 \times 0 = a = gcd(a,0)
-$$
