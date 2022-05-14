@@ -52,7 +52,7 @@ $$
 下面证明
 
 $$
-\forall i \leq n,\,\exist x,y \in \mathbb{Z},\,(r_{i}, r_{i+1})=r_{i}x+r_{i+1}y.
+\forall i \leq n,\,\exists x,y \in \mathbb{Z},\,(r_{i}, r_{i+1})=r_{i}x+r_{i+1}y.
 $$
 
 初始条件：由 $r_{n+1}=0$ 有
