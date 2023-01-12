@@ -1,4 +1,8 @@
-# Pwn 学习：Stack Based Overflows 实战
+---
+title: Pwn 学习：Stack Based Overflows 实战
+date: 2023-01-13 01:17:00
+tags: CTF
+---
 
 自己第一次学汇编是一年多以前了，逆向也搞过不少，但是 pwn 一直没尝试过。越狱 iPhone 时看了看那些漏洞的 POC 第一眼就觉得好高深啊，这起码得学完操作系统以后再说了。然而逆 iOS App 的时候学 arm 汇编看的[这篇文章](https://azeria-labs.com/writing-arm-assembly-part-1/)写了这段话：
 
@@ -61,7 +65,7 @@ f.write('A'*26059+'\x30\xf7\x0f\x00'+'\x90'*25+'\xcc'+'\x90'*25)
 f.close()
 ```
 
-第四步是从加载的 DLL 里找 `jmp esp` 这个指令，绕过 `\x00` 导致字符串中间有 terminator 的问题。我用的是 [mona.py](https://www.corelan.be/index.php/2011/07/14/mona-py-the-manual/)（继承了 pvefindaddr）简单看了一下文档，下载放入 PyCommands 然后 DLL 加载完成后在 Immunity Debugger 底部文本框输入
+第四步是从加载的 DLL 里找 `jmp esp` 这个指令，绕过地址中有 `\x00` 导致字符串中间有 terminator 的问题。我用的是 [mona.py](https://www.corelan.be/index.php/2011/07/14/mona-py-the-manual/)（继承了 pvefindaddr）简单看了一下文档，下载放入 PyCommands 然后 DLL 加载完成后在 Immunity Debugger 底部文本框输入
 
 ```
 !mona find -type bin -s ffe4
