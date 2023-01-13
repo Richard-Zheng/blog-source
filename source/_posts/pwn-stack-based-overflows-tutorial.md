@@ -45,7 +45,107 @@ int main(int argc, char **argv) {
 
 编译完成后打开 Immunity Debugger 然后打开 exe 并且 arguments 随便填个 `AAAAAA`。进去以后单步调试观察函数调用和 strcpy 的作用。
 
-这里有个小知识盲区，`MOV DWORD PTR SS:[ESP],EAX` 这个 `SS` 是啥意思？有的地方写的是 `DS`。于是搜了一通：[What does "DS:40207A" mean in assembly?](https://stackoverflow.com/questions/3819699/what-does-ds40207a-mean-in-assembly) 然后又找了一下 [What does `dword ptr` mean?](https://stackoverflow.com/questions/2987876/what-does-dword-ptr-mean)
+这里正好学习一下 gdb 用法。下面用 gdb 调试：
+
+```
+Microsoft Windows XP [Version 5.1.2600]
+(C) Copyright 1985-2001 Microsoft Corp.
+
+C:\Documents and Settings\Administrator>cd C:\
+
+C:\>gdb stacktest.exe
+GNU gdb 5.2.1
+Copyright 2002 Free Software Foundation, Inc.
+GDB is free software, covered by the GNU General Public License, and you are
+welcome to change it and/or distribute copies of it under certain conditions.
+Type "show copying" to see the conditions.
+There is absolutely no warranty for GDB.  Type "show warranty" for details.
+This GDB was configured as "i686-pc-mingw32"...(no debugging symbols found)...
+(gdb) set args AAAAAAA
+(gdb) set disassembly-flavor intel
+(gdb) break main
+Breakpoint 1 at 0x4012b6
+(gdb) run
+Starting program: C:\stacktest.exe AAAAAAA
+
+Breakpoint 1, 0x004012b6 in main ()
+(gdb) disassemble
+Dump of assembler code for function main:
+0x4012b0 <main>:        push   ebp
+0x4012b1 <main+1>:      mov    ebp,esp
+0x4012b3 <main+3>:      sub    esp,0x8
+0x4012b6 <main+6>:      and    esp,0xfffffff0
+0x4012b9 <main+9>:      mov    eax,0x0
+0x4012be <main+14>:     add    eax,0xf
+0x4012c1 <main+17>:     add    eax,0xf
+0x4012c4 <main+20>:     shr    eax,0x4
+0x4012c7 <main+23>:     shl    eax,0x4
+0x4012ca <main+26>:     mov    DWORD PTR [ebp-4],eax
+0x4012cd <main+29>:     mov    eax,DWORD PTR [ebp-4]
+0x4012d0 <main+32>:     call   0x401730 <_alloca>
+0x4012d5 <main+37>:     call   0x4013d0 <__main>
+0x4012da <main+42>:     mov    eax,DWORD PTR [ebp+12]
+0x4012dd <main+45>:     add    eax,0x4
+0x4012e0 <main+48>:     mov    eax,DWORD PTR [eax]
+0x4012e2 <main+50>:     mov    DWORD PTR [esp],eax
+0x4012e5 <main+53>:     call   0x401290 <vulnerable_func>
+0x4012ea <main+58>:     leave
+0x4012eb <main+59>:     ret
+0x4012ec <main+60>:     nop
+0x4012ed <main+61>:     nop
+---Type <return> to continue, or q <return> to quit---
+```
+
+重点观察的就是这几行：
+
+```
+0x4012da <main+42>:     mov    eax,DWORD PTR [ebp+12]
+0x4012dd <main+45>:     add    eax,0x4
+0x4012e0 <main+48>:     mov    eax,DWORD PTR [eax]
+0x4012e2 <main+50>:     mov    DWORD PTR [esp],eax
+0x4012e5 <main+53>:     call   0x401290 <vulnerable_func>
+```
+
+前面三行在取栈上 `argv[1]` 的值并放入 `eax`. 第 4 行将 `eax` 入栈。第 5 行将 `eip` 入栈保存 caller 地址然后跳转到 `0x401290`.
+
+验证一下：
+
+```
+(gdb) break *main+50
+Breakpoint 2 at 0x4012e2
+(gdb) continue
+Continuing.
+
+Breakpoint 2, 0x004012e2 in main ()
+(gdb) info registers eax
+eax            0x3e248f 4072591
+(gdb) x/s $eax
+0x3e248f:        "AAAAAAA"
+(gdb) stepi
+0x004012e5 in main ()
+(gdb) info frame
+Stack level 0, frame at 0x22ff78:
+ eip = 0x4012e5 in main; saved eip 0x4011e7
+ Arglist at 0x22ff78, args:
+ Locals at 0x22ff78, Previous frame's sp is 0x0
+ Saved registers:
+  ebp at 0x22ff78, eip at 0x22ff7c
+(gdb) x/4x $esp
+0x22ff60:       0x003e248f      0x0022ec24      0x003e29f0      0x004012d5
+(gdb) stepi
+0x00401290 in vulnerable_func ()
+(gdb) info frame
+Stack level 0, frame at 0x22ff78:
+ eip = 0x401290 in vulnerable_func; saved eip 0x4011e7
+ Arglist at 0x22ff78, args:
+ Locals at 0x22ff78, Previous frame's sp is 0x0
+ Saved registers:
+  ebp at 0x22ff78, eip at 0x22ff7c
+(gdb) x/4x $esp
+0x22ff5c:       0x004012ea      0x003e248f      0x0022ec24      0x003e29f0
+```
+
+这里有个小知识盲区，Immunity Debugger 里面显示 `MOV DWORD PTR SS:[ESP],EAX` 这个 `SS` 是啥意思？有的地方写的是 `DS`。于是搜了一通：[What does "DS:40207A" mean in assembly?](https://stackoverflow.com/questions/3819699/what-does-ds40207a-mean-in-assembly) 然后又找了一下 [What does `dword ptr` mean?](https://stackoverflow.com/questions/2987876/what-does-dword-ptr-mean)
 
 第三步是把 debugger 挂到要研究的程序上观察崩溃原因。直接打开程序然后 attach 即可。
 
