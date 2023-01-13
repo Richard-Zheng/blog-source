@@ -33,6 +33,8 @@ f.close()
 然后第二步是写个小 demo 演示漏洞原理，代码
 
 ```c++
+#include <string.h>
+
 void vulnerable_func(char *buffer) {
      char canoverflow[128];
      strcpy(canoverflow, buffer);
@@ -43,16 +45,32 @@ int main(int argc, char **argv) {
 }
 ```
 
-编译完成后打开 Immunity Debugger 然后打开 exe 并且 arguments 随便填个 `AAAAAA`。进去以后单步调试观察函数调用和 strcpy 的作用。
-
-这里正好学习一下 gdb 用法。下面用 gdb 调试：
+用 Dev-C++ 自带 gcc 编译，注意加 `-g` 选项生成 debug symbols.
 
 ```
 Microsoft Windows XP [Version 5.1.2600]
 (C) Copyright 1985-2001 Microsoft Corp.
 
-C:\Documents and Settings\Administrator>cd C:\
+C:\>type main.c
+#include <string.h>
 
+void vulnerable_func(char *buffer) {
+     char canoverflow[128];
+     strcpy(canoverflow, buffer);
+}
+
+int main(int argc, char **argv) {
+     vulnerable_func(argv[1]);
+}
+
+C:\>gcc main.c -g -o stacktest
+```
+
+编译完成后打开 Immunity Debugger 然后打开 exe 并且 arguments 随便填个 `AAAAAA`。进去以后单步调试观察函数调用和 strcpy 的作用。
+
+这里正好学习一下 gdb 用法。下面用 gdb 调试：
+
+```
 C:\>gdb stacktest.exe
 GNU gdb 5.2.1
 Copyright 2002 Free Software Foundation, Inc.
@@ -60,15 +78,16 @@ GDB is free software, covered by the GNU General Public License, and you are
 welcome to change it and/or distribute copies of it under certain conditions.
 Type "show copying" to see the conditions.
 There is absolutely no warranty for GDB.  Type "show warranty" for details.
-This GDB was configured as "i686-pc-mingw32"...(no debugging symbols found)...
+This GDB was configured as "i686-pc-mingw32"...
 (gdb) set args AAAAAAA
 (gdb) set disassembly-flavor intel
 (gdb) break main
-Breakpoint 1 at 0x4012b6
+Breakpoint 1 at 0x4012d5: file main.c, line 8.
 (gdb) run
 Starting program: C:\stacktest.exe AAAAAAA
 
-Breakpoint 1, 0x004012b6 in main ()
+Breakpoint 1, main (argc=2, argv=0x3e24f0) at main.c:8
+8       int main(int argc, char **argv) {
 (gdb) disassemble
 Dump of assembler code for function main:
 0x4012b0 <main>:        push   ebp
@@ -91,9 +110,7 @@ Dump of assembler code for function main:
 0x4012e5 <main+53>:     call   0x401290 <vulnerable_func>
 0x4012ea <main+58>:     leave
 0x4012eb <main+59>:     ret
-0x4012ec <main+60>:     nop
-0x4012ed <main+61>:     nop
----Type <return> to continue, or q <return> to quit---
+End of assembler dump.
 ```
 
 重点观察的就是这几行：
@@ -112,38 +129,83 @@ Dump of assembler code for function main:
 
 ```
 (gdb) break *main+50
-Breakpoint 2 at 0x4012e2
+Breakpoint 2 at 0x4012e2: file main.c, line 9.
 (gdb) continue
 Continuing.
 
-Breakpoint 2, 0x004012e2 in main ()
+Breakpoint 2, 0x004012e2 in main (argc=2, argv=0x3e24f0) at main.c:9
+9            vulnerable_func(argv[1]);
 (gdb) info registers eax
 eax            0x3e248f 4072591
 (gdb) x/s $eax
 0x3e248f:        "AAAAAAA"
 (gdb) stepi
-0x004012e5 in main ()
+0x004012e5      9            vulnerable_func(argv[1]);
 (gdb) info frame
 Stack level 0, frame at 0x22ff78:
- eip = 0x4012e5 in main; saved eip 0x4011e7
- Arglist at 0x22ff78, args:
+ eip = 0x4012e5 in main (main.c:9); saved eip 0x4011e7
+ source language c.
+ Arglist at 0x22ff78, args: argc=2, argv=0x3e24f0
  Locals at 0x22ff78, Previous frame's sp is 0x0
  Saved registers:
   ebp at 0x22ff78, eip at 0x22ff7c
 (gdb) x/4x $esp
 0x22ff60:       0x003e248f      0x0022ec24      0x003e29f0      0x004012d5
 (gdb) stepi
-0x00401290 in vulnerable_func ()
+vulnerable_func (buffer=0x2 <Address 0x2 out of bounds>) at main.c:3
+3       void vulnerable_func(char *buffer) {
 (gdb) info frame
 Stack level 0, frame at 0x22ff78:
- eip = 0x401290 in vulnerable_func; saved eip 0x4011e7
- Arglist at 0x22ff78, args:
+ eip = 0x401290 in vulnerable_func (main.c:3); saved eip 0x4011e7
+ source language c.
+ Arglist at 0x22ff78, args: buffer=0x2 <Address 0x2 out of bounds>
  Locals at 0x22ff78, Previous frame's sp is 0x0
  Saved registers:
   ebp at 0x22ff78, eip at 0x22ff7c
 (gdb) x/4x $esp
 0x22ff5c:       0x004012ea      0x003e248f      0x0022ec24      0x003e29f0
 ```
+
+现在来看看 `strcpy` 的影响，在 `vulnerable_func` 结尾下断点，观察栈：
+
+```
+(gdb) disassemble
+Dump of assembler code for function vulnerable_func:
+0x401290 <vulnerable_func>:     push   ebp
+0x401291 <vulnerable_func+1>:   mov    ebp,esp
+0x401293 <vulnerable_func+3>:   sub    esp,0x98
+0x401299 <vulnerable_func+9>:   mov    eax,DWORD PTR [ebp+8]
+0x40129c <vulnerable_func+12>:  mov    DWORD PTR [esp+4],eax
+0x4012a0 <vulnerable_func+16>:  lea    eax,[ebp-136]
+0x4012a6 <vulnerable_func+22>:  mov    DWORD PTR [esp],eax
+0x4012a9 <vulnerable_func+25>:  call   0x401820 <strcpy>
+0x4012ae <vulnerable_func+30>:  leave
+0x4012af <vulnerable_func+31>:  ret
+End of assembler dump.
+(gdb) break *0x4012ae
+Breakpoint 3 at 0x4012ae: file main.c, line 6.
+(gdb) continue
+Continuing.
+
+Breakpoint 3, vulnerable_func (buffer=0x3e248f "AAAAAAA") at main.c:6
+6       }
+(gdb) print &canoverflow
+$1 = (char (*)[128]) 0x22fed0
+(gdb) x/44x $esp
+0x22fec0:       0x0022fed0      0x003e248f      0x00401330      0x0022ec1c
+0x22fed0:       0x41414141      0x00414141      0x0022fcd0      0x7c9101c0
+0x22fee0:       0x41414141      0x41414141      0x0022fec8      0x41414141
+0x22fef0:       0x0022ff2c      0x77c35c94      0x77c3a52e      0x77c61ae8
+0x22ff00:       0x0022ff3c      0x77c39d60      0x00000008      0x77c34e2f
+0x22ff10:       0x77c34e29      0x0022ec24      0x0022ec1c      0x00000000
+0x22ff20:       0x00401330      0x0022ff14      0x77c12088      0x0022ffe0
+0x22ff30:       0x77c35c94      0x77c12850      0xffffffff      0x77c34e29
+0x22ff40:       0x77c34e42      0x00401330      0x0022ff58      0x00401416
+0x22ff50:       0x00401330      0x00004000      0x0022ff78      0x004012ea
+0x22ff60:       0x003e248f      0x0022ec24      0x003e29f0      0x004012d5
+```
+
+`0x41` 是 `A` 对应的 ASCII 码。可以发现 `0x41414141 0x00` 是我们输入的参数。如果这个参数长度足够长且中间不包含 `0x00`，就能够覆盖后面的内存。
 
 这里有个小知识盲区，Immunity Debugger 里面显示 `MOV DWORD PTR SS:[ESP],EAX` 这个 `SS` 是啥意思？有的地方写的是 `DS`。于是搜了一通：[What does "DS:40207A" mean in assembly?](https://stackoverflow.com/questions/3819699/what-does-ds40207a-mean-in-assembly) 然后又找了一下 [What does `dword ptr` mean?](https://stackoverflow.com/questions/2987876/what-does-dword-ptr-mean)
 
