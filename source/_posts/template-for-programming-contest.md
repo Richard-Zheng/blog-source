@@ -145,7 +145,7 @@ int gcd(int a, int b) {
 
 两个数的最大公因数（Greatest Common Divisor）就是它们质因数的**交集**的乘积
 
-考虑最小公倍数的性质。最小公倍数必须被$a$或$b$​整除，也就是说最小公倍数必须同时包含这两数的所有质因数，所以是它们质因数的**并集**的乘积。怎样得到这个乘积？$a\times b$，然后容斥除掉共同的质因数$gcd(a,b)$就好了。
+考虑最小公倍数的性质。最小公倍数必须被$a$或$b$整除，也就是说最小公倍数必须同时包含这两数的所有质因数，所以是它们质因数的**并集**的乘积。怎样得到这个乘积？$a\times b$，然后容斥除掉共同的质因数$gcd(a,b)$就好了。
 $$
 lcm(a,b)=\dfrac{a\times b}{gcd(a,b)}
 $$
@@ -175,56 +175,68 @@ int gcd(int a, int b) {
 }
 ```
 
-在函数返回之前，存在$b=0$. 这时显然有$x=1,y=0$使得
+在函数返回之前，存在 $b=0$ . 这时显然有 $x=1,y=0$ 使得
+
 $$
 a\cdot 1+0\cdot 0=gcd(a,0)
 $$
+
 0 和任何数的最大公约数都等于原数。
 
 当$b>0$时，有$gcd(a,b)=gcd(b,a\bmod b)$. 假设存在$x,y$使得
+
 $$
 bx+(a\bmod b)y=gcd(b,a\bmod b)
 $$
+
 且
+
 $$
 a\bmod b=a-b\cdot \left\lfloor \dfrac{a}{b} \right\rfloor
 $$
+
 所以
+
 $$
 \begin{aligned}
 bx+(a\bmod b)y&=bx+\left(a-b\cdot \left\lfloor \dfrac{a}{b} \right\rfloor\right)y\\
 &=ay-b\left(x-\left\lfloor \dfrac{a}{b} \right\rfloor y\right )
 \end{aligned}
 $$
-令$x'=y,\ y'=x-\left\lfloor \dfrac{a}{b} \right\rfloor y$，可得
+
+令 $x'=y,\ y'=x-\left\lfloor \dfrac{a}{b} \right\rfloor y$ ，可得
+
 $$
 ax'+by'=gcd(a,b)
 $$
+
 用归纳法即可得证。
 
 参考：https://www.cnblogs.com/fusiwei/p/11775503.html
 
 ### 扩展欧几里得
 
-为什么叫它扩展欧几里得呢？因为它就是在欧几里得算法（辗转相除法）求得$gcd(a,b)$的基础上，像上面裴蜀定理的证明那样倒着回溯找了一组$x,y$满足
+为什么叫它扩展欧几里得呢？因为它就是在欧几里得算法（辗转相除法）求得 $gcd(a,b)$ 的基础上，像上面裴蜀定理的证明那样倒着回溯找了一组 $x,y$ 满足
+
 $$
 ax+by=gcd(a,b)
 $$
+
 具体代码请看下面的线性同余方程。
 
 ### 线性同余方程（线性丢番图方程）
 
-形如$ax\equiv c\pmod b$的方程被称为线性同余方程 (Congruence Equation)。
+形如 $ax\equiv c\pmod b$ 的方程被称为线性同余方程 (Congruence Equation)。
 
 #### 求解方法
 
 根据以下两个定理，我们可以求出同余方程 $ax \equiv c \pmod b$ 的解。
 
-**定理 1**：方程 $ax+by=c$ 与方程 $ax \equiv c \pmod b$ 是等价的，有整数解的充要条件为 $\gcd(a,b) \mid c$。
+**定理 1**：方程 $ax+by=c$ 与方程 $ax \equiv c \pmod b$ 是等价的，有整数解的充要条件为 $\gcd(a,b) \mid c$ 。
 
-根据定理 1，方程 $ax+by=c$，我们可以先用扩展欧几里得算法求出一组 $x_0,y_0$，也就是 $ax_0+by_0=\gcd(a,b)$，然后两边同时除以 $\gcd(a,b)$，再乘 $c$。然后就得到了方程 $a\dfrac{c}{\gcd(a,b)}x_0+b\dfrac{c}{\gcd(a,b)}y_0=c$，然后我们就找到了方程的一个解。
+根据定理 1，方程 $ax+by=c$，我们可以先用扩展欧几里得算法求出一组 $x_0,y_0$ ，也就是 $ax_0+by_0=\gcd(a,b)$ ，然后两边同时除以 $\gcd(a,b)$ ，再乘 $c$ 。然后就得到了方程 $a\dfrac{c}{\gcd(a,b)}x_0+b\dfrac{c}{\gcd(a,b)}y_0=c$ ，然后我们就找到了方程的一个解。
 
-**定理 2**：若 $\gcd(a,b)=1$，且 $x_0$、$y_0$ 为方程 $ax+by=c$ 的一组解，则该方程的任意解可表示为：$x=x_0+bt$，$y=y_0-at$, 且对任意整数 $t$ 都成立。
+**定理 2**：若 $\gcd(a,b)=1$ ，且 $x_0$、$y_0$ 为方程 $ax+by=c$ 的一组解，则该方程的任意解可表示为：$x=x_0+bt$ ，$y=y_0-at$ , 且对任意整数 $t$ 都成立。
 
 根据定理 2，可以求出方程的所有解。但在实际问题中，我们往往被要求求出一个最小整数解，也就是一个特解 $x=(x \bmod t+t) \bmod t$，其中 $t=\dfrac{b}{\gcd(a,b)}$。
 
@@ -249,6 +261,31 @@ bool liEu(int a, int b, int c, int& x, int& y) {
   y *= k;
   return 1;
 }
+```
+
+### Python 版
+
+```python
+def exgcd(a, b):
+    if b == 0:
+        return (1, 0)
+    m, n = exgcd(b, a%b)
+    # recursion invariant: b * m + (a%b) * n == gcd(b,a%b) == gcd(a,b)
+    # let a = b * q + a%b
+    # then b * m + (a - b * q) * n == gcd(a,b)
+    # thus a * n + b * (m - n * q) == gcd(a,b)
+    q = a // b
+    return (n, m - n * q)
+
+def CRT(a, r):
+    n = reduce(lambda x, y: x*y, r)
+    ans = 0
+    for i in range(len(a)):
+        m = n / r[i]
+        mi, _ = exgcd(m, r[i]) # m's multiplicative inverse
+        ans += a[i] * m * mi
+        ans %= n
+    return ans
 ```
 
 ## 常用 STL
