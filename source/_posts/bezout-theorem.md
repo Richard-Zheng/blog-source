@@ -99,13 +99,19 @@ $$
 
 利用上面的递推过程我们得到了 extended Euclidean algorithm. 它可以计算出 $(a,b)=ax+by$ 的一组整数解。
 
+下面是一个可能注释比上面的证明好理解得多的 Python 代码实现（？）。
+
 ```python
 def exgcd(a, b):
     if b == 0:
         return (1, 0)
-    else:
-        x, y = exgcd(b, a % b)
-        return (y, x-(a//b)*y)
+    m, n = exgcd(b, a%b)
+    # recursion invariant: b * m + (a%b) * n == gcd(b, a%b) == gcd(a, b)
+    # let a = b * q + a%b
+    # then b * m + (a - b * q) * n == gcd(a, b)
+    # thus a * n + b * (m - n * q) == gcd(a, b)
+    q = a // b
+    return (n, m - n * q)
 
 
 x, y = exgcd(10319, 2312)
