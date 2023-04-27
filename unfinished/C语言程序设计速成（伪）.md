@@ -103,3 +103,18 @@ http://c-faq.com/decl/cdecl1.html
 *`floating-suffix`*: one of
 
  **`f`** **`l`** **`F`** **`L`**
+
+## 字符串
+
+### 输入输出
+
+`strcmp(str1, str2)` 返回 `str1-str2`
+
+## 动态内存管理
+
+在标头 `<stdlib.h>` 定义
+
+- 分配内存 `void* malloc( size_t size );`
+- calloc分配并清零内存 `void* calloc( size_t num, size_t size );`
+- realloc扩充之前分配的内存块 `void *realloc( void *ptr, size_t new_size );`
+- free归还之前分配的内存 `void free( void* ptr );`
