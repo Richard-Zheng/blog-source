@@ -5,6 +5,22 @@ tags: 算法
 mathjax: true
 ---
 
+## 对拍脚本
+
+Win32 Command Prompt
+
+```bat
+@echo off
+:loop
+python a.py < stdin.txt > myout.txt
+fc stdout.txt myout.txt
+if not errorlevel 1 echo ok
+::choice /t 1 /d y /n >nul
+pause
+cls
+goto :loop
+```
+
 ## 基础算法
 
 ### 快速幂
